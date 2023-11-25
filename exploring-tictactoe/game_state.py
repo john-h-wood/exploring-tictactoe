@@ -1,3 +1,7 @@
+import copy
+
+ends_reached = 0
+end_states = list()
 class GameState:
     """
     0   1   2
@@ -10,7 +14,10 @@ class GameState:
         self.turn = turn
         self.win_state = self.compute_win_state()
         self.parent_state = parent_state
-        self.child_states = list()
+        self.child_states = None
+
+    def __repr__(self):
+        return f'GameState(board={self.board}, ...)'
 
     def print_board(self):
         for row_index in range(0, 9, 3):
@@ -44,3 +51,33 @@ class GameState:
             if space_state == 0:
                 blank_indices.append(space_index)
         return blank_indices
+
+    def populate_child_states(self):
+        global ends_reached, end_states
+
+        # Create children list if it doesn't exist
+        if self.child_states is None:
+            self.child_states = list()
+            # There are only children if this isn't an end state
+            if self.win_state == 0:
+                next_turn = 1 if (self.turn == 2) else 2
+
+                for blank_index in self.find_blank_indices():
+                    child_board = copy.copy(self.board)
+                    child_board[blank_index] = self.turn
+                    child_state = GameState(child_board, next_turn, self)
+
+                    self.child_states.append(child_state)
+            else:
+                ends_reached += 1
+                end_states.append(self)
+        else:
+            raise ValueError(f'{self} already has populated children')
+
+    def recursively_populate_child_states(self):
+        if self.child_states is None:
+            self.populate_child_states()
+
+        for child_state in self.child_states:
+            child_state.recursively_populate_child_states()
+
