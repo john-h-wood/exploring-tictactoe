@@ -1,7 +1,6 @@
 import copy
 
-ends_reached = 0
-end_states = list()
+
 class GameState:
     """
     0   1   2
@@ -53,8 +52,6 @@ class GameState:
         return blank_indices
 
     def populate_child_states(self):
-        global ends_reached, end_states
-
         # Create children list if it doesn't exist
         if self.child_states is None:
             self.child_states = list()
@@ -68,9 +65,6 @@ class GameState:
                     child_state = GameState(child_board, next_turn, self)
 
                     self.child_states.append(child_state)
-            else:
-                ends_reached += 1
-                end_states.append(self)
         else:
             raise ValueError(f'{self} already has populated children')
 
@@ -80,4 +74,16 @@ class GameState:
 
         for child_state in self.child_states:
             child_state.recursively_populate_child_states()
+
+    def recursively_find_child_end_states(self):
+        child_end_states = list()
+
+        for child_state in self.child_states:
+            if child_state.win_state != 0:
+                child_end_states.append(child_state)
+            else:
+                child_end_states.extend(child_state.recursively_find_child_end_states())
+
+        return child_end_states
+
 
