@@ -4,10 +4,13 @@ class GameState:
     3   4   5
     6   7   8
     """
-    def __init__(self, board, turn):
+
+    def __init__(self, board, turn, parent_state):
         self.board = board
         self.turn = turn
         self.win_state = self.compute_win_state()
+        self.parent_state = parent_state
+        self.child_states = list()
 
     def print_board(self):
         for row_index in range(0, 9, 3):
@@ -35,3 +38,9 @@ class GameState:
         # No wins found. Is board full? Is so, then tie (3). Otherwise, nothing (0)
         return 0 if (0 in self.board) else 3
 
+    def find_blank_indices(self):
+        blank_indices = list()
+        for space_index, space_state in enumerate(self.board):
+            if space_state == 0:
+                blank_indices.append(space_index)
+        return blank_indices
