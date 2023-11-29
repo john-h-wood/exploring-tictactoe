@@ -5,15 +5,15 @@ from copy import copy
 
 class TTCState:
     # ============ SPECIAL FUNCTIONS ===================================================================================
-    def __init__(self, board, turn):
+    def __init__(self, board, turn, is_root=False):
         # State identity
         self.id = board_to_int(board)
         self.board = board
         self.turn = turn
         self.win_state = compute_win_state(board)
 
-        # State relations (lazily computed)
-        self._parent_ids = None
+        # State relations (lazily computed). Root state has no parents.
+        self._parent_ids = list() if is_root else None
         self._children_ids = None
 
     def __repr__(self):
