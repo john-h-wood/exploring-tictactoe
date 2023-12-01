@@ -1,3 +1,4 @@
+import time
 from random import choice
 from ttc_theory import flatten_board, compute_win_state
 from ttc_state import TTCState
@@ -17,30 +18,30 @@ def print_random_game(state_map):
     print_board(working_state.board)
 
 
-def populate_state_map():
+def populate_stored_states():
     root_board = flatten_board([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
-    root_state = TTCState(root_board, GAME_TURN_X, True)
-    state_map = {root_state.id: root_state}
+    root_state = TTCState(root_board, GAME_TURN_X)
+    stored_states = {root_state.id: root_state}
 
-    root_state.recursively_populate_children(state_map)
+    root_state.recursively_populate_children(stored_states)
 
-    return state_map
+    return stored_states
 
 
-def count_end_states(state_map):
+def count_end_states(stored_states):
     count = 0
-    for state in state_map.values():
+    for state in stored_states.values():
         if state.win_state != GAME_WIN_NONE:
             count += 1
     return count
 
 
-def validate_end_states(state_map):
+def validate_end_states(stored_states):
     # Make list of end states
     end_states = list()
     seen_boards = list()
 
-    for state in state_map.values():
+    for state in stored_states.values():
         if state.win_state != GAME_WIN_NONE:
             end_states.append(state)
     for end_state in end_states:
@@ -51,11 +52,11 @@ def validate_end_states(state_map):
             print(f'{end_state} board')
 
 
-def print_relation_stats(state_map):
+def print_relation_stats(stored_states):
     maximum_parents = -1
 
-    for state in state_map.values():
-        parent_count = len(state.get_parent_ids())
+    for state in stored_states.values():
+        parent_count = len(state.parents)
 
         if parent_count > maximum_parents:
             maximum_parents = parent_count
@@ -64,8 +65,10 @@ def print_relation_stats(state_map):
 
 
 def main():
-    state_map = populate_state_map()
-    print_relation_stats(state_map)
+    start = time.perf_counter()
+    stored_states = populate_stored_states()
+    print(len(stored_states))
+    print(f'{round(time.perf_counter() - start, 3)}s')
 
 
 if __name__ == '__main__':

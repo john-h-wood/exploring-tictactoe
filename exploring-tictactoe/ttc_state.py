@@ -2,43 +2,24 @@ from ttc_constants import GAME_WIN_NONE, CELL_EMPTY, GAME_TURN_X, GAME_TURN_O
 from ttc_theory import compute_win_state, board_to_int
 from copy import copy
 
+# TODO add typing everywhere. It helps, eg gives relevant methods
+
 
 class TTCState:
     # ============ SPECIAL FUNCTIONS ===================================================================================
-    def __init__(self, board, turn, is_root=False):
+    def __init__(self, board, turn):
         # State identity
         self.id = board_to_int(board)
         self.board = board
         self.turn = turn
         self.win_state = compute_win_state(board)
 
-        # State relations (lazily computed). Root state has no parents.
-        self._parent_ids = list() if is_root else None
-        self._children_ids = None
+        # State relations
+        self.parents: list[TTCState] = list()
+        self.children: list[TTCState] = list()
 
     def __repr__(self):
         return f'TTCState({self.board}, {self.turn})'
-
-    # ============ RELATIONS FUNCTIONS =================================================================================
-    def get_parent_ids(self):
-        if self._parent_ids is None:
-            raise Exception(f'{self} parent state ids have not been populated')
-        return self._parent_ids
-
-    def get_children_ids(self):
-        if self._children_ids is None:
-            raise Exception(f'{self} child state ids have not been populated')
-        return self._children_ids
-
-    def add_parent_id(self, parent_id):
-        if self._parent_ids is None:
-            self._parent_ids = list()
-        self._parent_ids.append(parent_id)
-
-    def add_child_id(self, child_id):
-        if self._children_ids is None:
-            self._children_ids = list()
-        self._children_ids.append(child_id)
 
     # ============ POPULATION FUNCTIONS ================================================================================
 
@@ -49,11 +30,11 @@ class TTCState:
                 empty_cells_indices.append(cell_index)
         return empty_cells_indices
 
-    def populate_children(self, state_map):
-        if self._children_ids is not None:
-            raise Exception(f'{self} child states have already been populated')
-        if (self.win_state != GAME_WIN_NONE) and self._children_ids is None:
-            self._children_ids = list()
+    def populate_children(self, stored_states):
+        # TODO make stored_state optional
+        # TODO make check for if children or parents have already been updated?
+        if self.win_state != GAME_WIN_NONE:
+            return
 
         # Create children by processing move
         for empty_cell_index in self.find_empty_cell_indices():
@@ -63,24 +44,25 @@ class TTCState:
 
             # Update state map
             # If child exists in map, add parent reference
-            if child_id in state_map:
-                state_map[child_id].add_parent_id(self.id)
+            if child_id in stored_states:
+                stored_states[child_id].parents.append(self)
             # Otherwise, create new game state
             else:
                 child_turn = GAME_TURN_X if (self.turn == GAME_TURN_O) else GAME_TURN_O
                 child_state = TTCState(child_board, child_turn)
-                child_state.add_parent_id(self.id)
+                child_state.parents.append(self)
 
-                state_map[child_id] = child_state
+                stored_states[child_id] = child_state
 
             # Update this state's children ids
-            self.add_child_id(child_id)
+            self.children.append(stored_states[child_id])
 
-    def recursively_populate_children(self, state_map):
-        if self._children_ids is None:
-            self.populate_children(state_map)
-        for child_id in self._children_ids:
-            state_map[child_id].recursively_populate_children(state_map)
+    def recursively_populate_children(self, stored_states):
+        # Must do self children if they haven't been done
+        if len(self.children) == 0 and self.win_state == GAME_WIN_NONE:
+            self.populate_children(stored_states)
+        for child in self.children:
+            child.recursively_populate_children(stored_states)
 
 
 
