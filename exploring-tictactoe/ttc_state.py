@@ -1,8 +1,10 @@
 from ttc_constants import GAME_WIN_NONE, CELL_EMPTY, GAME_TURN_X, GAME_TURN_O
-from ttc_theory import compute_win_state, board_to_int
+from ttc_theory import compute_win_state, board_to_int, combine_child_win_state
 from copy import copy
 
 # TODO add typing everywhere. It helps, eg gives relevant methods
+
+chain_count = 0
 
 
 class TTCState:
@@ -17,6 +19,9 @@ class TTCState:
         # State relations
         self.parents: list[TTCState] = list()
         self.children: list[TTCState] = list()
+
+        # Future calculation
+        self.future_win_state = None
 
     def __repr__(self):
         return f'TTCState({self.board}, {self.turn})'
@@ -63,7 +68,3 @@ class TTCState:
             self.populate_children(stored_states)
         for child in self.children:
             child.recursively_populate_children(stored_states)
-
-
-
-

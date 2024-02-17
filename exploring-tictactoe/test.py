@@ -1,6 +1,6 @@
 import time
 from random import choice
-from ttc_theory import flatten_board, compute_win_state
+from ttc_theory import flatten_board, compute_win_state, combine_child_win_state
 from ttc_state import TTCState
 from ttc_constants import GAME_TURN_X, GAME_WIN_NONE
 from ttc_format import print_board
@@ -67,8 +67,14 @@ def print_relation_stats(stored_states):
 def main():
     start = time.perf_counter()
     stored_states = populate_stored_states()
-    print(len(stored_states))
-    print(f'{round(time.perf_counter() - start, 3)}s')
+    print(f'Time to populate stored states: {round(time.perf_counter() - start, 3)}s')
+
+    TTCState.recursively_calculate_future_win_states(stored_states)
+
+    print(combine_child_win_state(1, 1, 2))
+
+    for state in stored_states.values():
+        print(state.future_win_state)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from ttc_constants import CELL_STATE_COUNT
+from ttc_constants import *
 
 
 # ============ FUNCTIONS ON BOARD ======================================================================================
@@ -43,3 +43,26 @@ def compute_win_state(board):
 
     # No wins found. Is board full? Is so, then tie (3). Otherwise, nothing (0)
     return 0 if (0 in board) else 3
+
+
+def combine_child_win_state(turn, win_state, child_win_state):
+    # a==b -> a
+    # both are tie -> tie (captured by above)
+    # one tie -> at least tie for whoever's turn it for the parent
+    # otherwise, can't tell
+    win_states = (win_state, child_win_state)
+    if win_state == child_win_state:
+        return win_state
+
+    elif GAME_WIN_TIE in win_states:
+        if turn == GAME_TURN_X:
+            return GAME_WIN_TIE_POSSIBILITY_X
+        return GAME_WIN_TIE_POSSIBILITY_O
+
+    elif (GAME_WIN_X in win_states) and turn == GAME_TURN_X:
+        return GAME_WIN_X
+
+    elif (GAME_WIN_O in win_states) and turn == GAME_TURN_O:
+        return GAME_WIN_O
+
+    return GAME_WIN_NONE
