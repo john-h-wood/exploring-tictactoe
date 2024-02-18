@@ -8,7 +8,7 @@ from copy import copy
 
 class TTCState:
     # ============ SPECIAL FUNCTIONS ===================================================================================
-    def __init__(self, board, turn, depth=0):
+    def __init__(self, board, turn, depth):
         # State identity
         self.id = board_to_int(board)
         self.board = board
@@ -46,7 +46,7 @@ class TTCState:
             child_board = copy(self.board)
             child_board[empty_cell_index] = self.turn
             child_id = board_to_int(child_board)
-            child_depth = self.depth - 1
+            child_depth = self.depth + 1
 
             # Update state map
             # If child exists in map, add parent reference
@@ -61,7 +61,7 @@ class TTCState:
                 stored_states[child_depth][child_id] = child_state
 
             # Update this state's children ids
-            self.children.append(stored_states[child_id])
+            self.children.append(stored_states[child_depth][child_id])
 
     def recursively_populate_children(self, stored_states):
         # Must do self children if they haven't been done
