@@ -2,14 +2,14 @@ import time
 from random import choice
 from ttc_theory import flatten_board, compute_win_state, combine_child_win_state
 from ttc_state import TTCState
-from ttc_constants import GAME_TURN_X, GAME_WIN_NONE
+from ttc_constants import GAME_TURN_X, WIN_NONE
 from ttc_format import print_board
 
 
 def print_random_game(state_map):
     working_state = state_map[0]
 
-    while working_state.win_state == GAME_WIN_NONE:
+    while working_state.win_state == WIN_NONE:
         print_board(working_state.board)
         print()
         random_child_id = choice(working_state.get_children_ids())
@@ -31,7 +31,7 @@ def populate_stored_states():
 def count_end_states(stored_states):
     count = 0
     for state in stored_states.values():
-        if state.win_state != GAME_WIN_NONE:
+        if state.win_state != WIN_NONE:
             count += 1
     return count
 
@@ -42,13 +42,13 @@ def validate_end_states(stored_states):
     seen_boards = list()
 
     for state in stored_states.values():
-        if state.win_state != GAME_WIN_NONE:
+        if state.win_state != WIN_NONE:
             end_states.append(state)
     for end_state in end_states:
         if end_state.board in seen_boards:
             print(f'{end_state} board fails uniqueness')
         seen_boards.append(end_state.board)
-        if compute_win_state(end_state.board) == GAME_WIN_NONE:
+        if compute_win_state(end_state.board) == WIN_NONE:
             print(f'{end_state} board')
 
 

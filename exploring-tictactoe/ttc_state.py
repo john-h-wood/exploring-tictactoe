@@ -1,4 +1,4 @@
-from ttc_constants import GAME_WIN_NONE, CELL_EMPTY, GAME_TURN_X, GAME_TURN_O
+from ttc_constants import WIN_NONE, CELL_EMPTY, GAME_TURN_X, GAME_TURN_O
 from ttc_theory import compute_win_state, board_to_int, combine_child_win_state
 from copy import copy
 
@@ -38,7 +38,7 @@ class TTCState:
     def populate_children(self, stored_states):
         # TODO make stored_state optional
         # TODO make check for if children or parents have already been updated?
-        if self.win_state != GAME_WIN_NONE:
+        if self.win_state != WIN_NONE:
             return
 
         # Create children by processing move
@@ -64,7 +64,7 @@ class TTCState:
 
     def recursively_populate_children(self, stored_states):
         # Must do self children if they haven't been done
-        if len(self.children) == 0 and self.win_state == GAME_WIN_NONE:
+        if len(self.children) == 0 and self.win_state == WIN_NONE:
             self.populate_children(stored_states)
         for child in self.children:
             child.recursively_populate_children(stored_states)
