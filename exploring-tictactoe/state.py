@@ -1,5 +1,5 @@
 from constants import WIN_NONE, CELL_EMPTY, TURN_X, TURN_O
-from theory import compute_win_state, board_to_int, combine_child_win_state
+from theory import compute_win_state, board_to_int
 from copy import copy
 
 # TODO add typing everywhere. It helps, eg gives relevant methods
