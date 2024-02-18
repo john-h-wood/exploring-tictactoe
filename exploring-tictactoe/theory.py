@@ -1,4 +1,4 @@
-from ttc_constants import *
+from constants import *
 
 
 # ============ FUNCTIONS ON BOARD ======================================================================================

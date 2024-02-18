@@ -1,9 +1,9 @@
 import time
 from random import choice
-from ttc_theory import flatten_board, compute_win_state, combine_child_win_state
-from ttc_state import TTCState
-from ttc_constants import TURN_X, WIN_NONE
-from ttc_format import print_board
+from theory import flatten_board, compute_win_state, combine_child_win_state
+from state import TTCState
+from constants import TURN_X, WIN_NONE
+from format import print_board
 
 
 def print_random_game(state_map):
