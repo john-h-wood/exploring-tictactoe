@@ -2,7 +2,7 @@ import time
 from random import choice
 from ttc_theory import flatten_board, compute_win_state, combine_child_win_state
 from ttc_state import TTCState
-from ttc_constants import GAME_TURN_X, WIN_NONE
+from ttc_constants import TURN_X, WIN_NONE
 from ttc_format import print_board
 
 
@@ -20,7 +20,7 @@ def print_random_game(state_map):
 
 def populate_stored_states():
     root_board = flatten_board([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
-    root_state = TTCState(root_board, GAME_TURN_X)
+    root_state = TTCState(root_board, TURN_X)
     stored_states = {root_state.id: root_state}
 
     root_state.recursively_populate_children(stored_states)

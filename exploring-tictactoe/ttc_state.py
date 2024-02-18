@@ -1,4 +1,4 @@
-from ttc_constants import WIN_NONE, CELL_EMPTY, GAME_TURN_X, GAME_TURN_O
+from ttc_constants import WIN_NONE, CELL_EMPTY, TURN_X, TURN_O
 from ttc_theory import compute_win_state, board_to_int, combine_child_win_state
 from copy import copy
 
@@ -53,7 +53,7 @@ class TTCState:
                 stored_states[child_id].parents.append(self)
             # Otherwise, create new game state
             else:
-                child_turn = GAME_TURN_X if (self.turn == GAME_TURN_O) else GAME_TURN_O
+                child_turn = TURN_X if (self.turn == TURN_O) else TURN_O
                 child_state = TTCState(child_board, child_turn)
                 child_state.parents.append(self)
 

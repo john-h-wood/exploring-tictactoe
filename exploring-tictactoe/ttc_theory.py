@@ -55,14 +55,14 @@ def combine_child_win_state(turn, win_state, child_win_state):
         return win_state
 
     elif WIN_TIE in win_states:
-        if turn == GAME_TURN_X:
+        if turn == TURN_X:
             return GAME_WIN_TIE_POSSIBILITY_X
         return GAME_WIN_TIE_POSSIBILITY_O
 
-    elif (WIN_X in win_states) and turn == GAME_TURN_X:
+    elif (WIN_X in win_states) and turn == TURN_X:
         return WIN_X
 
-    elif (WIN_O in win_states) and turn == GAME_TURN_O:
+    elif (WIN_O in win_states) and turn == TURN_O:
         return WIN_O
 
     return WIN_NONE
